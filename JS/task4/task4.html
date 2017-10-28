@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 04</title>
+    <style>
+        button {
+            cursor: pointer;
+        }
+
+        li {
+            list-style: none;
+            float: left;
+            padding: 10px;
+            background-color: #f00;
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+            line-height: 25px;
+            cursor: pointer;
+        }
+
+        li+li {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" id="input">
+    <button class="btn" id="btn-in-left">左侧入</button>
+    <button class="btn" id="btn-in-right">右侧入</button>
+    <button class="btn" id="btn-out-left">左侧出</button>
+    <button class="btn" id="btn-out-right">右侧出</button>
+    <ul id="display">
+        <li>2</li>
+        <li>2</li>
+    </ul>
+
+    <script type="text/javascript">
+
+
+        (function () {
+            
+            var data = [];
+            function getData() {
+                var li = display.children;
+                [].map.call(li, (item) => { data.push(item.innerText) })
+                return data;
+            }
+
+            function getValue() {
+                var value = document.getElementById('input').value;
+                return value
+            }
+
+            function render(data) {
+
+                var docFrag = document.createDocumentFragment();
+
+                data.map((item) => {
+                    var li = document.createElement('li');
+                    li.innerHTML = item;
+                    docFrag.appendChild(li);
+                })
+                display.innerHTML = '';
+                display.appendChild(docFrag);
+
+            }
+
+            function init() {
+                var leftIn = document.getElementById('btn-in-left');
+                var leftOut = document.getElementById('btn-out-left');
+                var rightIn = document.getElementById('btn-in-right');
+                var rightOut = document.getElementById('btn-out-right');
+                var display = document.getElementById('display');
+            
+                data = getData();
+
+                leftIn.addEventListener('click', () => {
+                    data.unshift(getValue());
+                    render(data);
+                }, false);
+               
+                rightIn.addEventListener('click', () => {
+                    data.push(getValue());
+                    render(data);
+                }, false); 
+                
+                
+                leftOut.addEventListener('click', () => {
+                    var deleteText = data.shift();
+                    render(data);
+                    alert(deleteText);
+                }, false);
+
+                rightOut.addEventListener('click', () => {
+                    var deleteText = data.pop();
+                    render(data);
+                    alert(deleteText);
+                }, false);
+
+                display.addEventListener('click', (event) => {
+                    var index = [].indexOf.call(event.target.parentNode.children, event.target);
+                    data.splice(index, 1);
+                    render(data);
+                }, false)
+
+            }
+            init()
+        })();
+
+    </script>
+</body>
+
+</html>

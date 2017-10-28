@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 05</title>
+    <style>
+        button {
+            cursor: pointer;
+        }
+        ul {
+            display: flex;
+            align-items: flex-end;
+        }
+        li {
+            flex: 0 0 20px;
+
+            list-style: none;
+            width: 20px;
+            height: 10px;
+        /* padding: 10px; */
+            background-color: #f00;
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+            /* line-height: 25px; */
+            cursor: pointer;
+        }
+
+        li+li {
+            margin-left: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" id="input">
+    <button class="btn" id="btn-in-left">左侧入</button>
+    <button class="btn" id="btn-in-right">右侧入</button>
+    <button class="btn" id="btn-out-left">左侧出</button>
+    <button class="btn" id="btn-out-right">右侧出</button>
+    <button id="resort">排序</button>
+    <ul id="display">
+        <!-- <li>2</li>
+        <li>2</li> -->
+    </ul>
+
+    <script type="text/javascript">
+
+
+        (function () {
+            
+            var data = [];
+            function getData() {
+                var li = display.children;
+                [].map.call(li, (item) => { data.push(item.innerText) })
+                return data;
+            }
+
+            function getValue() {
+                var value = + document.getElementById('input').value.trim();
+                if(!(typeof(value) === 'number' &&  value > 10 && value < 100)) {
+                    alert('请输入10~100之间的数字！')
+                    value = null;
+                }
+                return value
+            }
+
+            function render(data) {
+
+                var docFrag = document.createDocumentFragment();
+
+                data.map((item) => {
+                    var li = document.createElement('li');
+                    li.style.height = item + 'px';
+                    docFrag.appendChild(li);
+                })
+                display.innerHTML = '';
+                display.appendChild(docFrag);
+
+            }
+
+            function init() {
+                var leftIn = document.getElementById('btn-in-left');
+                var leftOut = document.getElementById('btn-out-left');
+                var rightIn = document.getElementById('btn-in-right');
+                var rightOut = document.getElementById('btn-out-right');
+                var display = document.getElementById('display');
+                var sort = document.getElementById('resort');
+            
+                data = getData();
+
+                leftIn.addEventListener('click', () => {
+                    if (data.length >= 60) {
+                        alert('队列元素数量最多限制为60个，请删减后再加入！')
+                        return;
+                    }
+                    if (getValue()) {
+                        data.unshift(getValue());
+                    } else {
+                        return;
+                    }
+                    render(data);
+                }, false);
+               
+                rightIn.addEventListener('click', () => {
+                    if (getValue()) {
+                        data.push(getValue());
+                    } else {
+                        return;
+                    }
+                    if (data.length >= 60) {
+                        alert('队列元素数量最多限制为60个，请删减后再加入！')
+                        return;
+                    }
+                    render(data);
+                }, false); 
+                
+                
+                leftOut.addEventListener('click', () => {
+                    data.shift();
+                    render(data);
+                }, false);
+
+                rightOut.addEventListener('click', () => {
+                    data.pop();
+                    render(data);
+                }, false);
+
+                display.addEventListener('click', (event) => {
+                    var index = [].indexOf.call(event.target.parentNode.children, event.target);
+                    data.splice(index, 1);
+                    render(data);
+                }, false);
+
+                sort.addEventListener('click', () => {
+                    data.sort((a, b) => b - a);
+                    render(data);
+                }, false)
+
+            }
+            init()
+        })();
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 06</title>
+    <style>
+        button {
+            cursor: pointer;
+        }
+        ul {
+            display: block;
+            height: 100px;
+        }
+        li {
+            list-style: none;
+            float: left;
+            padding: 10px;
+            background-color: #f00;
+            color: #fff;
+            font-size: 16px;
+            text-align: center;
+            line-height: 25px;
+            cursor: pointer;
+        }
+
+        li+li {
+            margin-left: 10px;
+        }
+
+        .found {
+            background-color: #ff0;
+            color: #f00
+        }
+    </style>
+</head>
+
+<body>
+    <textarea type="text" id="text-input"></textarea>
+    <button class="btn" id="btn-insert">插入</button>
+    <ul id="display">
+        <!-- <li>2 <span class="found">22</span></li>
+        <li>2</li> -->
+    </ul>
+    <input type="text" id="text-search"> 
+    <button id="btn-search">查询</button>
+
+    <script type="text/javascript">
+
+
+        (function () {
+            
+            
+            function getData() {
+                var data = [];
+                var li = display.children;
+                [].map.call(li, (item) => { data.push(item.innerText) })
+                return data;
+            }
+
+            function getValue() {
+                var value = document.getElementById('text-input').value.trim();
+                value = value.replace(/[^0-9a-zA-Z]/g, ' ').split(' ');
+                return value
+            }
+
+            function render(data) {
+
+                var docFrag = document.createDocumentFragment();
+
+                data.map((item) => {
+                    var li = document.createElement('li');
+                    li.innerHTML = item;
+                    docFrag.appendChild(li);
+                })
+                display.innerHTML = '';
+                display.appendChild(docFrag);
+
+            }
+
+            function renderSearch() {
+                var searchKey = document.getElementById('text-search').value.trim();
+                var docFrag = document.createDocumentFragment();
+                data = getData();
+                
+                data = data.map((item) => {
+                    var li = document.createElement('li');
+                    item = item.replace(RegExp(searchKey, 'g'), `<span class="found">${searchKey}</span>`);
+                    li.innerHTML = item;
+                    docFrag.appendChild(li);
+                    return item;
+                })
+                display.innerHTML = '';
+                display.appendChild(docFrag);
+            }
+
+            function init() {
+                var insert =  document.getElementById('btn-insert');
+                var display = document.getElementById('display');
+                var search = document.getElementById('btn-search');
+            
+                data = getData();
+
+               
+                insert.addEventListener('click', () => {
+                    data = data.concat(getValue());
+                    render(data);
+                }, false); 
+                
+               
+                display.addEventListener('click', (event) => {
+                    var index = [].indexOf.call(event.target.parentNode.children, event.target);
+                    data.splice(index, 1);
+                    render(data);
+                }, false);
+
+                search.addEventListener('click', () => {
+                    renderSearch();
+                }, false)
+
+            }
+            init()
+        })();
+
+    </script>
+</body>
+
+</html>
