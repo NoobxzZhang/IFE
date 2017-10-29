@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<htmlang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>IFE JavaScript Task 08</title>
+        <style>
+            .root,
+            .node-1,
+            .node-2,
+            .node-3,
+            .node-4 {
+                display: flex;
+                border: 1px solid black;
+                padding: 5px;
+                box-sizing: content-box;
+                margin-top: 20px;
+                background-color: #fff;
+                text-align: center;
+                margin: 20px 10px;
+            }
+
+            .btn-box,
+            .search-box {
+                margin-top: 20px;
+            }
+
+            .show {
+                background-color: #f00;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="root" id="root">
+            super
+            <div class="node-1">
+                Car
+                <div class="node-2">
+                    Apple
+                    <div class="node-3">33</div>
+                    <div class="node-3">Pig</div>
+                    <div class="node-3">Cola</div>
+                    <div class="node-3">Soccer</div>
+                </div>
+                <div class="node-2">
+                    Phone
+                </div>
+                <div class="node-2">
+                    <div class="node-3">Book</div>
+                    <div class="node-3">School</div>
+                </div>
+            </div>
+            <div class="node-1">
+                Note
+                <div class="node-2">
+                    Human
+                    <div class="node-3">Code</div>
+                    <div class="node-3">Operate</div>
+                    <div class="node-3">Man</div>
+                </div>
+                <div class="node-2">
+                    Program
+                    <div class="node-3">
+                        Bement
+                        <div class="node-4">Cat</div>
+                    </div>
+                    <div class="node-3">Glass</div>
+                </div>
+            </div>
+            <div class="node-1">fish</div>
+        </div>
+
+        </div>
+        <div class="btn-box">
+            <button id="btn-preorder">前序</button>
+            <button id="btn-inorder" class="lll">中序</button>
+            <button id="btn-postorder">后序</button>
+        </div>
+        <div class="search-box">
+            <input type="text" id="search-input" value="">
+            <button id="btn-preorder-search">前序查询</button>
+            <button id="btn-inorder-search">中序查询</button>
+            <button id="btn-postorder-search">后序查询</button>
+        </div>
+        <script>
+            (function () {
+                var btn_preorder = document.getElementById('btn-preorder');
+                var btn_inorder = document.getElementById('btn-inorder');
+                var btn_postorder = document.getElementById('btn-postorder');
+
+
+
+                var root = document.getElementById('root');
+                var timer = null;
+                var index = -1;
+                var treeNodes = [];
+                var treeNodesValue = [];
+
+                function show(nodes, search, founded) {
+                    var time = search ? 150 : 1000;
+                    var len = nodes.length;
+
+                    nodes.forEach(function (node, index, array) {
+                        timer = setTimeout(function () {
+                            node.classList.add('show')
+                            if (!(founded && len - 1 === index)) {
+                                setTimeout(function () {
+                                    node.classList.remove('show');
+                                }, time);
+                            }
+                        }, time * index)
+                    })
+                }
+
+                function getNodeValue(node) {
+                    return node.innerText.replace(/[^0-9a-zA-Z]/g, ' ').split(' ')[0].toLocaleLowerCase();;
+
+                }
+
+                function preOrder(node) {
+                    if (node) {
+                        treeNodes.push(node);
+                        treeNodesValue.push(getNodeValue(node))
+                        arguments.callee(node.firstElementChild);
+                        if (node !== root) {
+                            arguments.callee(node.nextElementSibling);
+                        }
+                    }
+
+                }
+
+                function inOrder(node) {
+                    if (node) {
+                        arguments.callee(node.firstElementChild);
+                        treeNodes.push(node);
+                        treeNodesValue.push(getNodeValue(node))
+                        if (node !== root) {
+                            arguments.callee(node.nextElementSibling);
+                        }
+                    }
+                }
+
+                function postOrder(node) {
+                    if (node) {
+                        arguments.callee(node.firstElementChild);
+                        if (node !== root) {
+                            arguments.callee(node.nextElementSibling);
+                        }
+                        treeNodes.push(node);
+                        treeNodesValue.push(getNodeValue(node))
+                    }
+                }
+
+                function reset() {
+                    if (index > 0) {
+                        treeNodes[index].classList.remove('show');
+                    }
+                    treeNodes = [];
+                    treeNodesValue = [];
+                    clearTimeout(timer);
+                }
+
+                btn_preorder.onclick = function () {
+                    reset();
+                    preOrder(root);
+                    show(treeNodes);
+                }
+                btn_inorder.onclick = function () {
+                    reset();
+                    inOrder(root);
+                    show(treeNodes);
+                }
+                btn_postorder.onclick = function () {
+                    reset();
+                    postOrder(root);
+                    show(treeNodes);
+                }
+
+                var btn_preorder_search = document.getElementById('btn-preorder-search');
+                var btn_inorder_search = document.getElementById('btn-inorder-search');
+                var btn_postorder_search = document.getElementById('btn-postorder-search');
+
+
+                function getIndex(treeNodesValue) {
+                    var keyword = document.getElementById('search-input').value.trim().toLocaleLowerCase();
+                    return treeNodesValue.indexOf(keyword);
+                }
+
+                btn_preorder_search.onclick = function () {
+                    reset();
+                    preOrder(root);
+                    index = getIndex(treeNodesValue)
+                    if ( index >= 0) {
+                        treeNodes = treeNodes.slice(0, getIndex(treeNodesValue) + 1);
+                        show(treeNodes, true, true);
+                    } else {
+                        show(treeNodes, true);
+                    }
+                }
+
+                btn_inorder_search.onclick = function () {
+                    reset();
+                    inOrder(root);
+                    index = getIndex(treeNodesValue)
+                    if ( index >= 0) {
+                        treeNodes = treeNodes.slice(0, getIndex(treeNodesValue) + 1);
+                        show(treeNodes, true, true);
+                    } else {
+                        show(treeNodes, true);
+                    }
+                }
+
+                btn_postorder_search.onclick = function () {
+                    reset();
+                    postOrder(root);
+                    index = getIndex(treeNodesValue)
+                    if ( index >= 0) {
+                        treeNodes = treeNodes.slice(0, getIndex(treeNodesValue) + 1);
+                        show(treeNodes, true, true);
+                    } else {
+                        show(treeNodes, true);
+                        setTimeout(function () {
+                            alert('未找到');
+                        }, treeNodes.length * 200)
+                    }
+                }
+
+            })()
+        </script>
+    </body>
+
+    </html>

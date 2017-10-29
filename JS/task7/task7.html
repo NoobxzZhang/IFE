@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>IFE JavaScript Task 07</title>
+    <style>
+        .root,
+        .node-1,
+        .node-2,
+        .node-3,
+        .node-4 {
+            border: 1px solid black;
+            padding: 5px;
+            box-sizing: content-box;
+            margin-top: 20px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .l {
+            float: left;
+        }
+
+        .r {
+            float: right;
+        }
+
+        .root {
+            width: 960px;
+            height: 260px;
+        }
+
+        .node-1 {
+            width: 440px;
+            height: 200px;
+        }
+
+        .node-2 {
+            width: 200px;
+            height: 140px;
+        }
+
+        .node-3 {
+            width: 80px;
+            height: 80px;
+        }
+
+        .node-4 {
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn-box {
+            margin-top: 20px;
+        }
+
+        .show {
+            background-color: #f00;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="root" id="root">
+        root
+        <div class="node-1 l">
+            1
+            <div class="node-2 l">
+                2
+                <div class="node-3 l">
+                    3
+                    <div class="node-4 l">
+                        4
+                    </div>
+                    <div class="node-4 r">
+                        4
+                    </div>
+                </div>
+                <div class="node-3 r">
+                    3
+                    <div class="node-4 l">
+                        4
+                    </div>
+                    <div class="node-4 r">
+                        4
+                    </div>
+                </div>
+            </div>
+            <div class="node-2 r">
+                2
+                <div class="node-3 l">
+                    3
+                    <div class="node-4 l">
+                        4
+                    </div>
+                    <div class="node-4 r">
+                        4
+                    </div>
+                </div>
+                <div class="node-3 r">
+                    3
+                    <div class="node-4 l">
+                        4
+                    </div>
+                    <div class="node-4 r">
+                        4
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="node-1 r">
+            1
+            <div class="node-2 l">
+                2
+                <div class="node-3 l">
+                    3
+                    <div class="node-4 l">
+                        4
+                    </div>
+                    <div class="node-4 r">
+                        4
+                    </div>
+                </div>
+                <div class="node-3 r">
+                    3
+                    <div class="node-4 l">
+                        4
+                    </div>
+                    <div class="node-4 r">
+                        4
+                    </div>
+                </div>
+            </div>
+            <div class="node-2 r">
+                2
+                <div class="node-3 l">
+                    3
+                    <div class="node-4 l">
+                        4
+                    </div>
+                    <div class="node-4 r">
+                        4
+                    </div>
+                </div>
+                <div class="node-3 r">
+                    3
+                    <div class="node-4 l">
+                        4
+                    </div>
+                    <div class="node-4 r">
+                        4
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="btn-box">
+        <button id="btn-preorder">前序</button>
+        <button id="btn-inorder" class="lll">中序</button>
+        <button id="btn-postorder">后序</button>
+    </div>
+    <script>
+        (function () {
+            var btn_preorder = document.getElementById('btn-preorder');
+            var btn_inorder = document.getElementById('btn-inorder');
+            var btn_postorder = document.getElementById('btn-postorder');
+
+            var root = document.getElementById('root');
+            var timer = null;
+            var treeNodes = [];
+
+            function show(nodes) {
+                nodes.forEach(function (node, index, array) {
+                    timer = setTimeout(function () {
+                        node.classList.add('show')
+                        setTimeout(function () {
+                            node.classList.remove('show');
+                        }, 1000);
+                    }, 1000 * index)
+                })
+            }
+
+            function preOrder(node) {
+                if (node) {
+                    treeNodes.push(node);
+                    arguments.callee(node.firstElementChild);
+                    arguments.callee(node.lastElementChild);
+                }
+
+            }
+
+            function inOrder(node) {
+                if (node) {
+                    arguments.callee(node.firstElementChild);
+                    treeNodes.push(node);
+                    arguments.callee(node.lastElementChild);
+                }
+            }
+
+            function postOrder(node) {
+                if (node) {
+                    arguments.callee(node.firstElementChild);
+                    arguments.callee(node.lastElementChild);
+                    treeNodes.push(node);
+                }
+            }
+
+            function reset() {
+                treeNodes = [];
+                clearTimeout(timer)
+            }
+
+            btn_preorder.onclick = function () {
+                reset();
+                preOrder(root);
+                show(treeNodes);
+            }
+            btn_inorder.onclick = function () {
+                reset();
+                inOrder(root);
+                show(treeNodes);
+            }
+            btn_postorder.onclick = function () {
+                reset();
+                postOrder(root);
+                show(treeNodes);
+            }
+        })()
+    </script>
+</body>
+
+</html>
